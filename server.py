@@ -1078,17 +1078,17 @@ async def advanced_chat(
 
 @app.post("/audio/transcribe")
 @limiter.limit("20/minute")
-async def transcribe_audio(request: AudioRequest):
+async def transcribe_audio(request: Request, audio_data: AudioRequest):
     """Transcribe audio to text with pronunciation scoring"""
     try:
         # Check audio size
-        audio_size = len(request.audio_base64) * 3 / 4  # Base64 approximation
+        audio_size = len(audio_data.audio_base64) * 3 / 4  # Base64 approximation
         max_size = int(os.getenv("MAX_AUDIO_SIZE_MB", 10)) * 1024 * 1024
         
         if audio_size > max_size:
             raise HTTPException(status_code=413, detail=f"Audio file too large. Maximum size is {max_size/1024/1024}MB")
         
-        audio_bytes = base64.b64decode(request.audio_base64)
+        audio_bytes = base64.b64decode(audio_data.audio_base64)
         
         # Transcribe
         transcription = await ai_service.transcribe_audio(audio_bytes)
@@ -1100,15 +1100,15 @@ async def transcribe_audio(request: AudioRequest):
         
         # Calculate Pronunciation Score
         pronunciation_data = {"score": 0, "similarity": 0, "word_accuracy": 0}
-        if request.reference_text and request.calculate_score:
+        if audio_data.reference_text and request.calculate_score:
             pronunciation_data = ai_service.calculate_pronunciation_score(
-                request.reference_text, 
+                audio_data.reference_text, 
                 transcription
             )
         
         return {
             "text": transcription,
-            "language": request.language,
+            "language": audio_data.language,
             "sentiment": sentiment,
             "grammar_score": grammar["score"],
             "grammar_issues": grammar.get("issues", []),
@@ -1126,7 +1126,7 @@ async def transcribe_audio(request: AudioRequest):
 
 @app.post("/translate/advanced")
 @limiter.limit("30/minute")
-async def advanced_translate(request: TranslationRequest):
+async def advanced_translation(request: Request, translation_request: TranslationRequest):
     """Enhanced translation with cultural context"""
     try:
         # Translate
@@ -1169,7 +1169,7 @@ async def analyze_grammar(request: GrammarAnalysisRequest):
         analysis = ai_service.analyze_grammar(request.text, detailed=request.detailed)
         
         # Add language-specific suggestions
-        if request.language == "en":
+        if audio_data.language == "en":
             analysis["language_specific_tips"] = [
                 "Remember to use articles (a, an, the) appropriately",
                 "Check subject-verb agreement",
@@ -1538,7 +1538,7 @@ async def store_conversation_async(session_id: str, user_id: str, request: ChatR
                 {"role": "user", "content": request.user_text},
                 {"role": "assistant", "content": response["ai_reply"]}
             ],
-            language=request.language,
+            language=audio_data.language,
             mode=request.mode.value,
             difficulty=request.difficulty.value,
             analytics=response,
