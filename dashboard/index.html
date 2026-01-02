@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LingoBot Pro - AI Language Learning</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-robot"></i>
+                <h1>LingoBot Pro</h1>
+            </div>
+            <nav class="nav">
+                <a href="#" class="active"><i class="fas fa-comments"></i> Chat</a>
+                <a href="#lessons"><i class="fas fa-graduation-cap"></i> Lessons</a>
+                <a href="#progress"><i class="fas fa-chart-line"></i> Progress</a>
+                <a href="#settings"><i class="fas fa-cog"></i> Settings</a>
+            </nav>
+            <div class="user-info">
+                <span id="username">Guest</span>
+                <button id="loginBtn" class="btn btn-primary">Login</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="chat-modes">
+                    <h3><i class="fas fa-language"></i> Learning Mode</h3>
+                    <div class="mode-options">
+                        <button class="mode-btn active" data-mode="tutor">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            <span>Tutor</span>
+                        </button>
+                        <button class="mode-btn" data-mode="examiner">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Examiner</span>
+                        </button>
+                        <button class="mode-btn" data-mode="roleplay">
+                            <i class="fas fa-theater-masks"></i>
+                            <span>Roleplay</span>
+                        </button>
+                        <button class="mode-btn" data-mode="debate">
+                            <i class="fas fa-comments"></i>
+                            <span>Debate</span>
+                        </button>
+                        <button class="mode-btn" data-mode="translator">
+                            <i class="fas fa-exchange-alt"></i>
+                            <span>Translator</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="language-selector">
+                    <h3><i class="fas fa-globe"></i> Language</h3>
+                    <select id="languageSelect">
+                        <option value="en">English</option>
+                        <option value="es">Spanish</option>
+                        <option value="fr">French</option>
+                        <option value="de">German</option>
+                        <option value="it">Italian</option>
+                        <option value="pt">Portuguese</option>
+                        <option value="ru">Russian</option>
+                        <option value="zh">Chinese</option>
+                        <option value="ja">Japanese</option>
+                        <option value="ko">Korean</option>
+                    </select>
+                </div>
+
+                <div class="quick-tips">
+                    <h3><i class="fas fa-lightbulb"></i> Quick Tips</h3>
+                    <div class="tip">
+                        <p>💡 Try speaking slowly and clearly for better pronunciation scoring.</p>
+                    </div>
+                    <div class="tip">
+                        <p>📚 Ask about grammar rules in your conversations.</p>
+                    </div>
+                    <div class="tip">
+                        <p>🎯 Use roleplay mode for real-life scenarios.</p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Chat Area -->
+            <section class="chat-area">
+                <div class="chat-header">
+                    <h2><i class="fas fa-comment-dots"></i> Practice Conversation</h2>
+                    <div class="chat-info">
+                        <span id="currentMode">Tutor Mode</span>
+                        <span id="currentLanguage">English</span>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Messages will appear here -->
+                    <div class="message ai">
+                        <div class="avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="content">
+                            <p>Hello! I'm your AI language tutor. I can help you practice conversations, correct your grammar, and improve your pronunciation. What would you like to practice today?</p>
+                            <span class="time">Just now</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input-area">
+                    <div class="input-group">
+                        <textarea id="messageInput" placeholder="Type your message here... (Press Enter to send, Shift+Enter for new line)" rows="2"></textarea>
+                        <div class="input-buttons">
+                            <button id="sendBtn" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Send
+                            </button>
+                            <button id="recordBtn" class="btn btn-secondary">
+                                <i class="fas fa-microphone"></i> Record
+                            </button>
+                            <button id="translateBtn" class="btn btn-secondary">
+                                <i class="fas fa-exchange-alt"></i> Translate
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="recording-section" id="recordingSection" style="display: none;">
+                        <div class="recording-indicator">
+                            <div class="pulse"></div>
+                            <span>Recording... Speak now</span>
+                        </div>
+                        <button id="stopRecordingBtn" class="btn btn-danger">
+                            <i class="fas fa-stop"></i> Stop Recording
+                        </button>
+                    </div>
+
+                    <div class="audio-player" id="audioPlayer" style="display: none;">
+                        <audio controls id="responseAudio"></audio>
+                        <button id="repeatBtn" class="btn btn-secondary">
+                            <i class="fas fa-redo"></i> Repeat
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stats Panel -->
+            <aside class="stats-panel">
+                <div class="stats-header">
+                    <h3><i class="fas fa-chart-bar"></i> Your Progress</h3>
+                    <button id="refreshStats" class="btn-icon">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Streak</span>
+                            <span class="stat-value" id="streakValue">0 days</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">XP</span>
+                            <span class="stat-value" id="xpValue">0</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Sessions</span>
+                            <span class="stat-value" id="sessionsValue">0</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Time</span>
+                            <span class="stat-value" id="timeValue">0 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skill-progress">
+                    <h4><i class="fas fa-tasks"></i> Skills Progress</h4>
+                    <div class="skill">
+                        <span class="skill-name">Grammar</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="grammarProgress" style="width: 25%"></div>
+                        </div>
+                        <span class="skill-percent">25%</span>
+                    </div>
+                    <div class="skill">
+                        <span class="skill-name">Vocabulary</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="vocabProgress" style="width: 40%"></div>
+                        </div>
+                        <span class="skill-percent">40%</span>
+                    </div>
+                    <div class="skill">
+                        <span class="skill-name">Pronunciation</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="pronunciationProgress" style="width: 15%"></div>
+                        </div>
+                        <span class="skill-percent">15%</span>
+                    </div>
+                    <div class="skill">
+                        <span class="skill-name">Fluency</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="fluencyProgress" style="width: 30%"></div>
+                        </div>
+                        <span class="skill-percent">30%</span>
+                    </div>
+                </div>
+
+                <div class="learning-tips">
+                    <h4><i class="fas fa-graduation-cap"></i> Today's Tips</h4>
+                    <ul id="tipsList">
+                        <li>Practice 10 new words daily</li>
+                        <li>Listen to the pronunciation carefully</li>
+                        <li>Review previous conversations</li>
+                        <li>Try different conversation modes</li>
+                    </ul>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Login Modal -->
+        <div id="loginModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2><i class="fas fa-sign-in-alt"></i> Login / Register</h2>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="login">Login</button>
+                        <button class="tab-btn" data-tab="register">Register</button>
+                    </div>
+                    
+                    <form id="loginForm" class="tab-content active">
+                        <div class="form-group">
+                            <label for="loginEmail">Email</label>
+                            <input type="email" id="loginEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                    </form>
+
+                    <form id="registerForm" class="tab-content">
+                        <div class="form-group">
+                            <label for="registerUsername">Username</label>
+                            <input type="text" id="registerUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">Email</label>
+                            <input type="email" id="registerEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">Password</label>
+                            <input type="password" id="registerPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <input type="password" id="confirmPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fas fa-user-plus"></i> Register
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>© 2024 LingoBot Pro - AI Language Learning Platform | Made with <i class="fas fa-heart"></i> for language learners</p>
+            <div class="footer-links">
+                <a href="#"><i class="fab fa-github"></i> GitHub</a>
+                <a href="#"><i class="fas fa-book"></i> Documentation</a>
+                <a href="#"><i class="fas fa-question-circle"></i> Help</a>
+                <a href="#"><i class="fas fa-shield-alt"></i> Privacy</a>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
