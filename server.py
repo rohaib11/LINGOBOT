@@ -1170,7 +1170,7 @@ async def analyze_grammar(request: GrammarAnalysisRequest):
         analysis = ai_service.analyze_grammar(request.text, detailed=request.detailed)
         
         # Add language-specific suggestions
-        if grammar_data.language == "en": # <--- FIXED
+        if request.language == "en":
             analysis["language_specific_tips"] = [
                 "Remember to use articles (a, an, the) appropriately",
                 "Check subject-verb agreement",
