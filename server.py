@@ -1101,7 +1101,7 @@ async def transcribe_audio(request: Request, audio_data: AudioRequest):
         
         # Calculate Pronunciation Score
         pronunciation_data = {"score": 0, "similarity": 0, "word_accuracy": 0}
-        if audio_data.reference_text and audio_data.calculate_score:
+        if audio_data.reference_text and audio_data.calculate_score: # <--- FIXED
             pronunciation_data = ai_service.calculate_pronunciation_score(
                 audio_data.reference_text, 
                 transcription
@@ -1170,7 +1170,7 @@ async def analyze_grammar(request: GrammarAnalysisRequest):
         analysis = ai_service.analyze_grammar(request.text, detailed=request.detailed)
         
         # Add language-specific suggestions
-        if request.language == "en":
+        if grammar_data.language == "en": # <--- FIXED
             analysis["language_specific_tips"] = [
                 "Remember to use articles (a, an, the) appropriately",
                 "Check subject-verb agreement",
